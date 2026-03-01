@@ -1,60 +1,276 @@
-import { Platform, StyleSheet } from 'react-native';
+import { useMemo, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
-import { Collapsible } from '@/components/ui/collapsible';
-import { ExternalLink } from '@/components/external-link';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Fonts } from '@/constants/theme';
-import { Link } from 'expo-router';
+import { Colors, Fonts } from '@/constants/theme';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+
+type SkillLevel = 'Any' | 'Beginner' | 'Intermediate' | 'Advanced';
+
+const sports = [
+  'Basketball',
+  'Soccer',
+  'Tennis',
+  'Volleyball',
+  'Running',
+  'Swimming',
+  'Cycling',
+  'Baseball',
+] as const;
+
+const levels: SkillLevel[] = ['Any', 'Beginner', 'Intermediate', 'Advanced'];
 
 export default function ExploreTwoScreen() {
+  const colorScheme = useColorScheme() ?? 'light';
+  const theme = Colors[colorScheme];
+  const styles = useMemo(() => createStyles(theme), [theme]);
+
+  const [selectedSports, setSelectedSports] = useState<string[]>(['Basketball', 'Soccer']);
+  const [skillLevel, setSkillLevel] = useState<SkillLevel>('Any');
+  const [indoorOnly, setIndoorOnly] = useState(false);
+  const [freeOnly, setFreeOnly] = useState(false);
+
+  const selectedSportsText = useMemo(() => {
+    if (selectedSports.length === 0) {
+      return 'No sports selected';
+    }
+    return selectedSports.join(', ');
+  }, [selectedSports]);
+
+  const toggleSport = (sport: string) => {
+    setSelectedSports((current: string[]) => {
+      if (current.indexOf(sport) !== -1) {
+        return current.filter((item: string) => item !== sport);
+      }
+      return [...current, sport];
+    });
+  };
+
+  const clearFilters = () => {
+    setSelectedSports([]);
+    setSkillLevel('Any');
+    setIndoorOnly(false);
+    setFreeOnly(false);
+  };
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="chevron.left.forwardslash.chevron.right"
-          style={styles.headerImage}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText
-          type="title"
-          style={{
-            fontFamily: Fonts.rounded,
-          }}>
-          Explore 2
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={{ marginVertical: 8 }}>
-        <Link href="/signup">
-          <ThemedText type="link">Create / edit your profile</ThemedText>
-        </Link>
-      </ThemedView>
-      <ThemedText>This is a duplicate of the Explore page (variant 2).</ThemedText>
-      <Collapsible title="Hints">
-        <ThemedText>Use this page as a copy of the original Explore screen.</ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-    </ParallaxScrollView>
+    <ThemedView style={styles.screen}>
+      <ScrollView contentContainerStyle={styles.content}>
+        <View style={styles.header}>
+          <ThemedText type="title" style={styles.title}>
+            Sports Filters
+          </ThemedText>
+          <ThemedText style={styles.subtitle}>Pick sports and preferences</ThemedText>
+        </View>
+
+        <View style={styles.card}>
+          <ThemedText style={styles.sectionTitle}>Sports</ThemedText>
+          <View style={styles.chipsWrap}>
+            {sports.map((sport) => {
+              const isSelected = selectedSports.indexOf(sport) !== -1;
+              return (
+                <Pressable
+                  key={sport}
+                  onPress={() => toggleSport(sport)}
+                  style={[styles.chip, isSelected && styles.chipSelected]}>
+                  <ThemedText style={[styles.chipText, isSelected && styles.chipTextSelected]}>
+                    {sport}
+                  </ThemedText>
+                </Pressable>
+              );
+            })}
+          </View>
+        </View>
+
+        <View style={styles.card}>
+          <ThemedText style={styles.sectionTitle}>Skill Level</ThemedText>
+          <View style={styles.levelRow}>
+            {levels.map((level) => {
+              const active = skillLevel === level;
+              return (
+                <Pressable
+                  key={level}
+                  onPress={() => setSkillLevel(level)}
+                  style={[styles.levelButton, active && styles.levelButtonActive]}>
+                  <ThemedText style={[styles.levelText, active && styles.levelTextActive]}>
+                    {level}
+                  </ThemedText>
+                </Pressable>
+              );
+            })}
+          </View>
+        </View>
+
+        <View style={styles.card}>
+          <ThemedText style={styles.sectionTitle}>Options</ThemedText>
+          <Pressable style={styles.toggleRow} onPress={() => setIndoorOnly((value: boolean) => !value)}>
+            <ThemedText style={styles.toggleLabel}>Indoor only</ThemedText>
+            <View style={[styles.toggle, indoorOnly && styles.toggleOn]}>
+              <View style={[styles.toggleThumb, indoorOnly && styles.toggleThumbOn]} />
+            </View>
+          </Pressable>
+          <Pressable style={styles.toggleRow} onPress={() => setFreeOnly((value: boolean) => !value)}>
+            <ThemedText style={styles.toggleLabel}>Free activities only</ThemedText>
+            <View style={[styles.toggle, freeOnly && styles.toggleOn]}>
+              <View style={[styles.toggleThumb, freeOnly && styles.toggleThumbOn]} />
+            </View>
+          </Pressable>
+        </View>
+
+        <View style={styles.summaryCard}>
+          <ThemedText style={styles.summaryTitle}>Current Filters</ThemedText>
+          <ThemedText style={styles.summaryText}>Sports: {selectedSportsText}</ThemedText>
+          <ThemedText style={styles.summaryText}>Skill: {skillLevel}</ThemedText>
+          <ThemedText style={styles.summaryText}>Indoor only: {indoorOnly ? 'Yes' : 'No'}</ThemedText>
+          <ThemedText style={styles.summaryText}>Free only: {freeOnly ? 'Yes' : 'No'}</ThemedText>
+
+          <Pressable style={styles.clearButton} onPress={clearFilters}>
+            <ThemedText style={styles.clearButtonText}>Clear Filters</ThemedText>
+          </Pressable>
+        </View>
+      </ScrollView>
+    </ThemedView>
   );
 }
 
-const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-});
+const createStyles = (theme: (typeof Colors)['light']) =>
+  StyleSheet.create({
+    screen: {
+      flex: 1,
+      backgroundColor: theme.background,
+    },
+    content: {
+      paddingHorizontal: 16,
+      paddingTop: 24,
+      paddingBottom: 36,
+      gap: 14,
+    },
+    header: {
+      marginBottom: 2,
+    },
+    title: {
+      fontFamily: Fonts.rounded,
+      color: theme.text,
+    },
+    subtitle: {
+      color: theme.icon,
+      marginTop: 4,
+    },
+    card: {
+      backgroundColor: theme.card,
+      borderWidth: 1,
+      borderColor: theme.secondary,
+      borderRadius: 14,
+      padding: 14,
+      gap: 12,
+    },
+    sectionTitle: {
+      color: theme.text,
+      fontFamily: Fonts.rounded,
+      fontSize: 16,
+    },
+    chipsWrap: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 8,
+    },
+    chip: {
+      borderRadius: 999,
+      borderWidth: 1,
+      borderColor: theme.secondary,
+      backgroundColor: theme.background,
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+    },
+    chipSelected: {
+      backgroundColor: theme.primary,
+      borderColor: theme.primary,
+    },
+    chipText: {
+      color: theme.text,
+      fontSize: 13,
+    },
+    chipTextSelected: {
+      color: theme.background,
+    },
+    levelRow: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 8,
+    },
+    levelButton: {
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: theme.secondary,
+      backgroundColor: theme.background,
+      paddingHorizontal: 10,
+      paddingVertical: 8,
+    },
+    levelButtonActive: {
+      backgroundColor: theme.primary,
+      borderColor: theme.primary,
+    },
+    levelText: {
+      color: theme.text,
+    },
+    levelTextActive: {
+      color: theme.background,
+    },
+    toggleRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    toggleLabel: {
+      color: theme.text,
+    },
+    toggle: {
+      width: 50,
+      height: 30,
+      borderRadius: 20,
+      backgroundColor: theme.icon,
+      justifyContent: 'center',
+      paddingHorizontal: 3,
+    },
+    toggleOn: {
+      backgroundColor: theme.primary,
+    },
+    toggleThumb: {
+      width: 22,
+      height: 22,
+      borderRadius: 11,
+      backgroundColor: theme.background,
+    },
+    toggleThumbOn: {
+      alignSelf: 'flex-end',
+    },
+    summaryCard: {
+      backgroundColor: theme.card,
+      borderWidth: 1,
+      borderColor: theme.secondary,
+      borderRadius: 14,
+      padding: 14,
+      gap: 8,
+    },
+    summaryTitle: {
+      color: theme.text,
+      fontFamily: Fonts.rounded,
+      fontSize: 16,
+    },
+    summaryText: {
+      color: theme.text,
+    },
+    clearButton: {
+      marginTop: 10,
+      alignSelf: 'flex-start',
+      borderRadius: 10,
+      paddingHorizontal: 12,
+      paddingVertical: 9,
+      backgroundColor: theme.primary,
+    },
+    clearButtonText: {
+      color: theme.background,
+      fontFamily: Fonts.rounded,
+    },
+  });
