@@ -1,35 +1,11 @@
 import { useState } from 'react';
-import { StyleSheet, TextInput, View, TouchableOpacity, ScrollView, Alert, Image, Pressable } from 'react-native';
+import { StyleSheet, TextInput, View, TouchableOpacity, ScrollView, Alert, Image } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-
-// Define Post type
-export type Post = {
-  id: number;
-  x: number;
-  y: number;
-  sport: string;
-  level: string;
-  indoor: boolean;
-  free: boolean;
-  title: string;
-  location: string;
-  time: string;
-  price: string;
-};
-
-const postListeners: Array<(post: Post) => void> = [];
-export function addPostListener(listener: (post: Post) => void) {
-  postListeners.push(listener);
-}
-export function notifyNewPost(post: Post) {
-  postListeners.forEach(l => l(post));
-}
-let POSTS: Post[] = [];
 
 export default function CreateGameScreen() {
   const colorScheme = useColorScheme();
@@ -40,35 +16,13 @@ export default function CreateGameScreen() {
   const [time, setTime] = useState('');
   const [price, setPrice] = useState('');
   const [level, setLevel] = useState('All Levels');
-  const [meetupPoint, setMeetupPoint] = useState<{x: number, y: number} | null>(null);
-
-  const handleMapPress = (event: any) => {
-    const { locationX, locationY } = event.nativeEvent;
-    setMeetupPoint({ x: locationX, y: locationY });
-  };
 
   const handleCreate = () => {
-    if (!title || !location || !time || !meetupPoint) {
-      Alert.alert('Missing Info', 'Please fill in all required fields and select a meetup point on the map.');
+    if (!title || !location || !time) {
+      Alert.alert('Missing Info', 'Please fill in all required fields.');
       return;
     }
-    // Add post to shared array and notify listeners
-    const newPost = {
-      id: Date.now(),
-      x: meetupPoint.x,
-      y: meetupPoint.y,
-      sport: 'Basketball', // Replace with actual form value if available
-      level,
-      indoor: false, // Replace with actual form value if available
-      free: true, // Replace with actual form value if available
-      title,
-      location,
-      time,
-      price,
-    };
-    POSTS.push(newPost);
-    notifyNewPost(newPost);
-    Alert.alert('Success', `Game created at (${meetupPoint.x.toFixed(0)}, ${meetupPoint.y.toFixed(0)})!`);
+    Alert.alert('Success', 'Game created successfully!');
   };
 
   return (
@@ -149,36 +103,12 @@ export default function CreateGameScreen() {
         <View style={styles.formGroup}>
           <ThemedText style={styles.label}>Select Meetup Point</ThemedText>
           <View style={styles.mapContainer}>
-            <Pressable onPress={handleMapPress} style={{ flex: 1 }}>
-              <Image
-                source={require('../../assets/images/maps.png')}
-                style={styles.mapImage}
-                resizeMode="cover"
-              />
-              {meetupPoint && (
-                <View style={{
-                  position: 'absolute',
-                  left: meetupPoint.x - 12,
-                  top: meetupPoint.y - 12,
-                  width: 24,
-                  height: 24,
-                  borderRadius: 12,
-                  backgroundColor: colors.tint,
-                  borderWidth: 2,
-                  borderColor: '#fff',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                  <IconSymbol name="mappin" size={16} color="#fff" />
-                </View>
-              )}
-            </Pressable>
+            <Image
+              source={require('../../assets/images/maps.png')}
+              style={styles.mapImage}
+              resizeMode="cover"
+            />
           </View>
-          <ThemedText style={{ color: colors.icon, marginTop: 8 }}>
-            {meetupPoint && typeof meetupPoint.x === 'number' && typeof meetupPoint.y === 'number'
-              ? `Selected point: (${meetupPoint.x.toFixed(0)}, ${meetupPoint.y.toFixed(0)})`
-              : 'Tap the map to select a meetup point.'}
-          </ThemedText>
         </View>
 
         <TouchableOpacity 
