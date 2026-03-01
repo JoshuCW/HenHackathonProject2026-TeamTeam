@@ -1,17 +1,11 @@
 import React, { useState } from 'react';
 import { StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
-import { Link, useRouter } from 'expo-router';
-
+import { useRouter } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export default function LoginScreen() {
   const router = useRouter();
-  const colorScheme = useColorScheme();
-  const colors = Colors[colorScheme ?? 'light'];
-  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -20,44 +14,31 @@ export default function LoginScreen() {
       Alert.alert('Error', 'Please enter email and password');
       return;
     }
-    // Simulate login
+    // TODO: Add real authentication logic here
     router.replace('/(tabs)');
   };
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedText type="title" style={styles.title}>Welcome Back</ThemedText>
-      <ThemedText style={styles.subtitle}>Sign in to find games near you</ThemedText>
-
+      <ThemedText type="title" style={styles.title}>Log In</ThemedText>
       <TextInput
-        style={[styles.input, { borderColor: colors.icon, color: colors.text }]}
+        style={styles.input}
         placeholder="Email"
-        placeholderTextColor={colors.icon}
         value={email}
         onChangeText={setEmail}
         autoCapitalize="none"
         keyboardType="email-address"
       />
-      
       <TextInput
-        style={[styles.input, { borderColor: colors.icon, color: colors.text }]}
+        style={styles.input}
         placeholder="Password"
-        placeholderTextColor={colors.icon}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
       />
-
-      <TouchableOpacity 
-        style={[styles.button, { backgroundColor: colors.tint }]}
-        onPress={handleLogin}
-      >
-        <ThemedText style={styles.buttonText}>Sign In</ThemedText>
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <ThemedText style={styles.buttonText}>Log In</ThemedText>
       </TouchableOpacity>
-
-      <Link href="/signup" style={styles.link}>
-        <ThemedText style={styles.linkText}>Don&apos;t have an account? <ThemedText style={{color: colors.tint, fontWeight: 'bold'}}>Sign Up</ThemedText></ThemedText>
-      </Link>
     </ThemedView>
   );
 }
@@ -65,20 +46,17 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
     justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
   },
   title: {
     fontSize: 32,
-    marginBottom: 8,
+    marginBottom: 24,
     textAlign: 'center',
-  },
-  subtitle: {
-    textAlign: 'center',
-    marginBottom: 40,
-    opacity: 0.7,
   },
   input: {
+    width: '100%',
     borderWidth: 1,
     borderRadius: 12,
     padding: 16,
@@ -86,21 +64,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   button: {
-    padding: 18,
-    borderRadius: 16,
-    alignItems: 'center',
+    backgroundColor: '#007AFF',
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    borderRadius: 12,
     marginTop: 8,
   },
   buttonText: {
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
-  },
-  link: {
-    marginTop: 24,
-    alignItems: 'center',
-  },
-  linkText: {
-    textAlign: 'center',
   },
 });

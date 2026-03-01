@@ -1,72 +1,51 @@
 import React, { useState } from 'react';
 import { StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
-import { Link, useRouter } from 'expo-router';
-
+import { useRouter } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export default function SignupScreen() {
   const router = useRouter();
-  const colorScheme = useColorScheme();
-  const colors = Colors[colorScheme ?? 'light'];
-  
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
 
   const handleSignup = () => {
-    if (!email || !password || !name) {
+    if (!name || !email || !password) {
       Alert.alert('Error', 'Please fill in all fields');
       return;
     }
-    // Simulate signup
-    router.replace('/(tabs)/profile');
+    // TODO: Add real signup logic here
+    router.replace('/(tabs)');
   };
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedText type="title" style={styles.title}>Create Account</ThemedText>
-      <ThemedText style={styles.subtitle}>Join the community today</ThemedText>
-
+      <ThemedText type="title" style={styles.title}>Sign Up</ThemedText>
       <TextInput
-        style={[styles.input, { borderColor: colors.icon, color: colors.text }]}
+        style={styles.input}
         placeholder="Full Name"
-        placeholderTextColor={colors.icon}
         value={name}
         onChangeText={setName}
       />
-
       <TextInput
-        style={[styles.input, { borderColor: colors.icon, color: colors.text }]}
+        style={styles.input}
         placeholder="Email"
-        placeholderTextColor={colors.icon}
         value={email}
         onChangeText={setEmail}
         autoCapitalize="none"
         keyboardType="email-address"
       />
-      
       <TextInput
-        style={[styles.input, { borderColor: colors.icon, color: colors.text }]}
+        style={styles.input}
         placeholder="Password"
-        placeholderTextColor={colors.icon}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
       />
-
-      <TouchableOpacity 
-        style={[styles.button, { backgroundColor: colors.tint }]}
-        onPress={handleSignup}
-      >
+      <TouchableOpacity style={styles.button} onPress={handleSignup}>
         <ThemedText style={styles.buttonText}>Sign Up</ThemedText>
       </TouchableOpacity>
-
-      <Link href="/login" style={styles.link}>
-        <ThemedText style={styles.linkText}>Already have an account? <ThemedText style={{color: colors.tint, fontWeight: 'bold'}}>Sign In</ThemedText></ThemedText>
-      </Link>
     </ThemedView>
   );
 }
@@ -74,20 +53,17 @@ export default function SignupScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
     justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
   },
   title: {
     fontSize: 32,
-    marginBottom: 8,
+    marginBottom: 24,
     textAlign: 'center',
-  },
-  subtitle: {
-    textAlign: 'center',
-    marginBottom: 40,
-    opacity: 0.7,
   },
   input: {
+    width: '100%',
     borderWidth: 1,
     borderRadius: 12,
     padding: 16,
@@ -95,21 +71,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   button: {
-    padding: 18,
-    borderRadius: 16,
-    alignItems: 'center',
+    backgroundColor: '#007AFF',
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    borderRadius: 12,
     marginTop: 8,
   },
   buttonText: {
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
-  },
-  link: {
-    marginTop: 24,
-    alignItems: 'center',
-  },
-  linkText: {
-    textAlign: 'center',
   },
 });

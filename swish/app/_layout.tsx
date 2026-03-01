@@ -9,7 +9,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 // expo-router linking. we want the login/signup flow to appear first,
 // so change the anchor to the login screen rather than the tabs layout.
 export const unstable_settings = {
-  anchor: 'login',
+  anchor: 'start',
 };
 
 export default function RootLayout() {
@@ -17,14 +17,9 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack initialRouteName="login">
-        {/* authentication screens come first */}
-        <Stack.Screen name="login" options={{ headerShown: false }} />
-        <Stack.Screen name="signup" options={{ headerShown: false }} />
-
-        {/* once authenticated we land in the tabs layout */}
+      <Stack initialRouteName="start">
+        <Stack.Screen name="start" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
       </Stack>
       <StatusBar style="auto" />

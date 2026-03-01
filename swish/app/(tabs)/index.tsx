@@ -7,6 +7,7 @@ import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useFilter } from './filter';
 
 const MOCK_GAMES = [
   {
@@ -41,9 +42,25 @@ const MOCK_GAMES = [
   },
 ];
 
+export type SkillLevel = 'Beginner' | 'Intermediate' | 'Advanced' | 'All Levels';
+
+export interface FilterState {
+  selectedSports: string[];
+  skillLevel: SkillLevel | 'Any';
+  // other fields...
+}
+
 export default function DiscoverScreen() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
+  const filter = useFilter();
+
+  const filteredGames = filter ? MOCK_GAMES.filter(game => {
+    const sportMatch = filter.selectedSports.length === 0 || filter.selectedSports.some(sport => game.title.toLowerCase().includes(sport.toLowerCase()));
+    const levelMatch = filter.skillLevel === 'Any' || game.level === filter.skillLevel;
+    // You can add indoorOnly and freeOnly logic if your data supports it
+    return sportMatch && levelMatch;
+  }) : MOCK_GAMES;
 
   return (
     <ThemedView style={styles.container}>
@@ -62,7 +79,7 @@ export default function DiscoverScreen() {
             </View>
           </View>
         )}
-        data={MOCK_GAMES}
+        data={filteredGames}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContent}
         renderItem={({ item }) => (

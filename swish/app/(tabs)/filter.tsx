@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import React, { createContext, useContext, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
@@ -20,6 +20,18 @@ const sports = [
 ] as const;
 
 const levels: SkillLevel[] = ['Any', 'Beginner', 'Intermediate', 'Advanced'];
+
+export type FilterValues = {
+  selectedSports: string[];
+  skillLevel: SkillLevel;
+  indoorOnly: boolean;
+  freeOnly: boolean;
+};
+
+export const FilterContext = createContext<FilterValues | undefined>(undefined);
+export function useFilter() {
+  return useContext(FilterContext);
+}
 
 export default function FilterScreen() {
   const colorScheme = useColorScheme() ?? 'light';
@@ -55,82 +67,84 @@ export default function FilterScreen() {
   };
 
   return (
-    <ThemedView style={styles.screen}>
-      <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.header}>
-          <ThemedText type="title" style={styles.title}>
-            Sports Filters
-          </ThemedText>
-          <ThemedText style={styles.subtitle}>Pick sports and preferences</ThemedText>
-        </View>
-
-        <View style={styles.card}>
-          <ThemedText style={styles.sectionTitle}>Sports</ThemedText>
-          <View style={styles.chipsWrap}>
-            {sports.map((sport) => {
-              const isSelected = selectedSports.indexOf(sport) !== -1;
-              return (
-                <Pressable
-                  key={sport}
-                  onPress={() => toggleSport(sport)}
-                  style={[styles.chip, isSelected && styles.chipSelected]}>
-                  <ThemedText style={[styles.chipText, isSelected && styles.chipTextSelected]}>
-                    {sport}
-                  </ThemedText>
-                </Pressable>
-              );
-            })}
+    <FilterContext.Provider value={{ selectedSports, skillLevel, indoorOnly, freeOnly }}>
+      <ThemedView style={styles.screen}>
+        <ScrollView contentContainerStyle={styles.content}>
+          <View style={styles.header}>
+            <ThemedText type="title" style={styles.title}>
+              Sports Filters
+            </ThemedText>
+            <ThemedText style={styles.subtitle}>Pick sports and preferences</ThemedText>
           </View>
-        </View>
 
-        <View style={styles.card}>
-          <ThemedText style={styles.sectionTitle}>Skill Level</ThemedText>
-          <View style={styles.levelRow}>
-            {levels.map((level) => {
-              const active = skillLevel === level;
-              return (
-                <Pressable
-                  key={level}
-                  onPress={() => setSkillLevel(level)}
-                  style={[styles.levelButton, active && styles.levelButtonActive]}>
-                  <ThemedText style={[styles.levelText, active && styles.levelTextActive]}>
-                    {level}
-                  </ThemedText>
-                </Pressable>
-              );
-            })}
+          <View style={styles.card}>
+            <ThemedText style={styles.sectionTitle}>Sports</ThemedText>
+            <View style={styles.chipsWrap}>
+              {sports.map((sport) => {
+                const isSelected = selectedSports.indexOf(sport) !== -1;
+                return (
+                  <Pressable
+                    key={sport}
+                    onPress={() => toggleSport(sport)}
+                    style={[styles.chip, isSelected && styles.chipSelected]}>
+                    <ThemedText style={[styles.chipText, isSelected && styles.chipTextSelected]}>
+                      {sport}
+                    </ThemedText>
+                  </Pressable>
+                );
+              })}
+            </View>
           </View>
-        </View>
 
-        <View style={styles.card}>
-          <ThemedText style={styles.sectionTitle}>Options</ThemedText>
-          <Pressable style={styles.toggleRow} onPress={() => setIndoorOnly((value: boolean) => !value)}>
-            <ThemedText style={styles.toggleLabel}>Indoor only</ThemedText>
-            <View style={[styles.toggle, indoorOnly && styles.toggleOn]}>
-              <View style={[styles.toggleThumb, indoorOnly && styles.toggleThumbOn]} />
+          <View style={styles.card}>
+            <ThemedText style={styles.sectionTitle}>Skill Level</ThemedText>
+            <View style={styles.levelRow}>
+              {levels.map((level) => {
+                const active = skillLevel === level;
+                return (
+                  <Pressable
+                    key={level}
+                    onPress={() => setSkillLevel(level)}
+                    style={[styles.levelButton, active && styles.levelButtonActive]}>
+                    <ThemedText style={[styles.levelText, active && styles.levelTextActive]}>
+                      {level}
+                    </ThemedText>
+                  </Pressable>
+                );
+              })}
             </View>
-          </Pressable>
-          <Pressable style={styles.toggleRow} onPress={() => setFreeOnly((value: boolean) => !value)}>
-            <ThemedText style={styles.toggleLabel}>Free activities only</ThemedText>
-            <View style={[styles.toggle, freeOnly && styles.toggleOn]}>
-              <View style={[styles.toggleThumb, freeOnly && styles.toggleThumbOn]} />
-            </View>
-          </Pressable>
-        </View>
+          </View>
 
-        <View style={styles.summaryCard}>
-          <ThemedText style={styles.summaryTitle}>Current Filters</ThemedText>
-          <ThemedText style={styles.summaryText}>Sports: {selectedSportsText}</ThemedText>
-          <ThemedText style={styles.summaryText}>Skill: {skillLevel}</ThemedText>
-          <ThemedText style={styles.summaryText}>Indoor only: {indoorOnly ? 'Yes' : 'No'}</ThemedText>
-          <ThemedText style={styles.summaryText}>Free only: {freeOnly ? 'Yes' : 'No'}</ThemedText>
+          <View style={styles.card}>
+            <ThemedText style={styles.sectionTitle}>Options</ThemedText>
+            <Pressable style={styles.toggleRow} onPress={() => setIndoorOnly((value: boolean) => !value)}>
+              <ThemedText style={styles.toggleLabel}>Indoor only</ThemedText>
+              <View style={[styles.toggle, indoorOnly && styles.toggleOn]}>
+                <View style={[styles.toggleThumb, indoorOnly && styles.toggleThumbOn]} />
+              </View>
+            </Pressable>
+            <Pressable style={styles.toggleRow} onPress={() => setFreeOnly((value: boolean) => !value)}>
+              <ThemedText style={styles.toggleLabel}>Free activities only</ThemedText>
+              <View style={[styles.toggle, freeOnly && styles.toggleOn]}>
+                <View style={[styles.toggleThumb, freeOnly && styles.toggleThumbOn]} />
+              </View>
+            </Pressable>
+          </View>
 
-          <Pressable style={styles.clearButton} onPress={clearFilters}>
-            <ThemedText style={styles.clearButtonText}>Clear Filters</ThemedText>
-          </Pressable>
-        </View>
-      </ScrollView>
-    </ThemedView>
+          <View style={styles.summaryCard}>
+            <ThemedText style={styles.summaryTitle}>Current Filters</ThemedText>
+            <ThemedText style={styles.summaryText}>Sports: {selectedSportsText}</ThemedText>
+            <ThemedText style={styles.summaryText}>Skill: {skillLevel}</ThemedText>
+            <ThemedText style={styles.summaryText}>Indoor only: {indoorOnly ? 'Yes' : 'No'}</ThemedText>
+            <ThemedText style={styles.summaryText}>Free only: {freeOnly ? 'Yes' : 'No'}</ThemedText>
+
+            <Pressable style={styles.clearButton} onPress={clearFilters}>
+              <ThemedText style={styles.clearButtonText}>Clear Filters</ThemedText>
+            </Pressable>
+          </View>
+        </ScrollView>
+      </ThemedView>
+    </FilterContext.Provider>
   );
 }
 
