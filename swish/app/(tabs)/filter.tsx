@@ -21,7 +21,7 @@ const sports = [
 
 const levels: SkillLevel[] = ['Any', 'Beginner', 'Intermediate', 'Advanced'];
 
-export default function ExploreTwoScreen() {
+export default function FilterScreen() {
   const colorScheme = useColorScheme() ?? 'light';
   const theme = Colors[colorScheme];
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -200,12 +200,11 @@ const createStyles = (theme: (typeof Colors)['light']) =>
       gap: 8,
     },
     levelButton: {
-      borderRadius: 10,
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+      borderRadius: 8,
       borderWidth: 1,
       borderColor: theme.secondary,
-      backgroundColor: theme.background,
-      paddingHorizontal: 10,
-      paddingVertical: 8,
     },
     levelButtonActive: {
       backgroundColor: theme.primary,
@@ -213,6 +212,7 @@ const createStyles = (theme: (typeof Colors)['light']) =>
     },
     levelText: {
       color: theme.text,
+      fontSize: 14,
     },
     levelTextActive: {
       color: theme.background,
@@ -221,56 +221,57 @@ const createStyles = (theme: (typeof Colors)['light']) =>
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
+      marginVertical: 6,
     },
     toggleLabel: {
       color: theme.text,
     },
     toggle: {
-      width: 50,
-      height: 30,
-      borderRadius: 20,
-      backgroundColor: theme.icon,
+      width: 40,
+      height: 20,
+      borderRadius: 10,
+      backgroundColor: theme.secondary + '40',
       justifyContent: 'center',
-      paddingHorizontal: 3,
     },
     toggleOn: {
       backgroundColor: theme.primary,
     },
     toggleThumb: {
-      width: 22,
-      height: 22,
-      borderRadius: 11,
+      width: 16,
+      height: 16,
+      borderRadius: 8,
       backgroundColor: theme.background,
+      marginLeft: 2,
     },
     toggleThumbOn: {
-      alignSelf: 'flex-end',
+      marginLeft: 22,
     },
     summaryCard: {
       backgroundColor: theme.card,
-      borderWidth: 1,
-      borderColor: theme.secondary,
       borderRadius: 14,
       padding: 14,
-      gap: 8,
+      marginTop: 20,
     },
     summaryTitle: {
       color: theme.text,
       fontFamily: Fonts.rounded,
       fontSize: 16,
+      marginBottom: 8,
     },
     summaryText: {
       color: theme.text,
+      fontSize: 14,
+      marginBottom: 4,
     },
     clearButton: {
-      marginTop: 10,
-      alignSelf: 'flex-start',
-      borderRadius: 10,
-      paddingHorizontal: 12,
-      paddingVertical: 9,
+      marginTop: 12,
+      paddingVertical: 10,
+      borderRadius: 8,
+      alignItems: 'center',
       backgroundColor: theme.primary,
     },
     clearButtonText: {
       color: theme.background,
-      fontFamily: Fonts.rounded,
+      fontWeight: '600',
     },
   });
