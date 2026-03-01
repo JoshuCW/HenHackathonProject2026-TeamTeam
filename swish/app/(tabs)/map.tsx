@@ -9,7 +9,7 @@ import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Fonts } from '@/constants/theme';
 
-export default function MapScreen() {
+export default function ExploreThreeScreen() {
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
@@ -27,12 +27,12 @@ export default function MapScreen() {
           style={{
             fontFamily: Fonts.rounded,
           }}>
-          Map
+          Explore 3
         </ThemedText>
       </ThemedView>
-      <ThemedText>This is the Map page.</ThemedText>
+      <ThemedText>This is a duplicate of the Explore page (variant 3).</ThemedText>
       <Collapsible title="Notes">
-        <ThemedText>A dedicated tab for map-related content.</ThemedText>
+        <ThemedText>Another copy of Explore for testing multiple tabs.</ThemedText>
         <ExternalLink href="https://docs.expo.dev/router/introduction">
           <ThemedText type="link">Learn more</ThemedText>
         </ExternalLink>
