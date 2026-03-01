@@ -56,7 +56,7 @@ export default function LoginScreen() {
       </TouchableOpacity>
 
       <Link href="/signup" style={styles.link}>
-        <ThemedText style={styles.linkText}>Don't have an account? <ThemedText style={{color: colors.tint, fontWeight: 'bold'}}>Sign Up</ThemedText></ThemedText>
+        <ThemedText style={styles.linkText}>Don&apos;t have an account? <ThemedText style={{color: colors.tint, fontWeight: 'bold'}}>Sign Up</ThemedText></ThemedText>
       </Link>
     </ThemedView>
   );
