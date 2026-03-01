@@ -1,4 +1,3 @@
-import { Image } from 'expo-image';
 import { Platform, StyleSheet } from 'react-native';
 
 import { Collapsible } from '@/components/ui/collapsible';
@@ -8,6 +7,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Fonts } from '@/constants/theme';
+import { Link } from 'expo-router';
 
 export default function ExploreThreeScreen() {
   return (
@@ -29,6 +29,11 @@ export default function ExploreThreeScreen() {
           }}>
           Explore 3
         </ThemedText>
+      </ThemedView>
+      <ThemedView style={{ marginVertical: 8 }}>
+        <Link href="/register">
+          <ThemedText type="link">Create / edit your profile</ThemedText>
+        </Link>
       </ThemedView>
       <ThemedText>This is a duplicate of the Explore page (variant 3).</ThemedText>
       <Collapsible title="Notes">
