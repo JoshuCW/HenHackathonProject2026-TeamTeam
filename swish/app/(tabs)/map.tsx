@@ -31,7 +31,7 @@ export default function ExploreThreeScreen() {
         </ThemedText>
       </ThemedView>
       <ThemedView style={{ marginVertical: 8 }}>
-        <Link href="/register">
+        <Link href="/signup">
           <ThemedText type="link">Create / edit your profile</ThemedText>
         </Link>
       </ThemedView>
